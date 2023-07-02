@@ -36,10 +36,20 @@ return [
             'throw' => false,
         ],
 
+        'user_photo' => [
+            'driver' => 'local',
+            'root' => public_path() . '/uploads/user_photo',
+        ],
+
+        'objek_wisata' => [
+            'driver' => 'local',
+            'root' => public_path() . '/uploads/objek_wisata',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
