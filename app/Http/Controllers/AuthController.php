@@ -91,6 +91,14 @@ class AuthController extends Controller
             ], 400);
         }
 
+        $updated = $user->update($validated);
+        if (!$updated) {
+            return response()->json([
+                "status" => 400,
+                "message" => "There is problem for updating process",
+            ], 400);
+        }
+
         return response()->json([
             "status" => 200,
             "message" => "Yes, update successfully!",
