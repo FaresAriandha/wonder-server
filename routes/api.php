@@ -26,18 +26,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('v1/login', [AuthController::class, 'authenticate']);
 Route::post('v1/registration', [AuthController::class, 'userStore']);
+Route::get('v1/discover', [ObjekWisataController::class, 'index']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // User relation
     Route::post('v1/logout', [AuthController::class, 'revoke']);
     Route::get('v1/profile/{user}', [AuthController::class, 'show']);
     Route::put('v1/profile/{user}', [AuthController::class, 'update']);
+});
 
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Admin relation
     Route::apiResource('v1/admin', AdminController::class);
 
     // Wisata relation
-    Route::apiResource('v1/discover', ObjekWisataController::class);
+    Route::apiResource('v1/discover', ObjekWisataController::class)->except('index');
 
     // Assesment relation
     Route::resource('v1/assesment', NilaiObjekWisataController::class);

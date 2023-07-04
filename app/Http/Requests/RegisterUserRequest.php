@@ -26,18 +26,26 @@ class RegisterUserRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'username' => 'required|max:255|string|unique:users,username',
-            'email' => 'required|email:rfc,dns|unique:users,email',
-            'password' => 'required|string',
-            'role' => 'required',
+            'username' => 'max:255|string',
+            'email' => 'email:rfc,dns',
+            'password' => 'string',
         ];
         if (request()->isMethod('put')) {
+            $rules['username'] = "required|max:255|string|unique:users,username";
+            $rules['email'] = "required|email:rfc,dns|unique:users,email";
             $rules['old_password'] = "required|max:255|string";
+            $rules['role'] = "required";
             $user_exist = User::where('id', request()->segment(4))->first();
             if ($user_exist) {
                 $user_exist->username == request()->get('username') ? $rules['username'] = "required|string" : "";
                 $user_exist->email == request()->get('email') ? $rules['email'] = "required|email:rfc,dns" : "";
             }
+        }
+
+        if (request()->segment(3) == "registration") {
+            $rules['username'] = "required|max:255|string|unique:users,username";
+            $rules['email'] = "required|email:rfc,dns|unique:users,email";
+            $rules['role'] = "required";
         }
         return $rules;
     }
