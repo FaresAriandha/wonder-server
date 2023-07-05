@@ -13,6 +13,16 @@ class ObjekWisata extends Model
 
     public function nilai_objek_wisata()
     {
-        return $this->hasMany(NilaiObjekWisata::class);
+        return $this->hasMany(NilaiObjekWisata::class, "id_objek_wisata");
+    }
+
+    public function like()
+    {
+        return $this->hasMany(LikeObjekWisata::class, "id_objek_wisata");
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(KomentarObjekWisata::class, "id_objek_wisata");
     }
 }

@@ -50,4 +50,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(KredensialAdmin::class);
     }
+
+    public function like()
+    {
+        return $this->hasMany(LikeObjekWisata::class, 'id_user');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(KomentarObjekWisata::class, 'id_user');
+    }
 }

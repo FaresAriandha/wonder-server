@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardObjekWisata;
 use App\Http\Controllers\KriteriaController;
 use App\Http\Controllers\NilaiObjekWisataController;
 use App\Http\Controllers\ObjekWisataController;
@@ -26,13 +27,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('v1/login', [AuthController::class, 'authenticate']);
 Route::post('v1/registration', [AuthController::class, 'userStore']);
-Route::get('v1/discover', [ObjekWisataController::class, 'index']);
+Route::apiResource('v1/discover', ObjekWisataController::class)->only(['index', 'show']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // User relation
     Route::post('v1/logout', [AuthController::class, 'revoke']);
     Route::get('v1/profile/{user}', [AuthController::class, 'show']);
     Route::put('v1/profile/{user}', [AuthController::class, 'update']);
+    Route::apiResource('v1/discover', ObjekWisataController::class)->only(['update']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -40,7 +42,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::apiResource('v1/admin', AdminController::class);
 
     // Wisata relation
-    Route::apiResource('v1/discover', ObjekWisataController::class)->except('index');
+    Route::apiResource('v1/discover-admin', DashboardObjekWisata::class);
 
     // Assesment relation
     Route::resource('v1/assesment', NilaiObjekWisataController::class);

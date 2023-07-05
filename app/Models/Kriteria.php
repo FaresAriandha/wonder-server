@@ -13,6 +13,6 @@ class Kriteria extends Model
 
     public function nilai_objek_wisata()
     {
-        return $this->hasMany(NilaiObjekWisata::class);
+        return $this->hasMany(NilaiObjekWisata::class, "id_kriteria");
     }
 }
