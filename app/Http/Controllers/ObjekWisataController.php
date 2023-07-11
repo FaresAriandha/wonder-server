@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Mockery\Undefined;
 use App\Models\ObjekWisata;
 use Illuminate\Http\Request;
 use App\Models\LikeObjekWisata;
 use App\Models\NilaiObjekWisata;
+use Illuminate\Support\Facades\DB;
 use App\Models\KomentarObjekWisata;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ObjekWisataRequest;
-use App\Http\Requests\LikeAndCommentRequest;
 use Illuminate\Contracts\Session\Session;
+use App\Http\Requests\LikeAndCommentRequest;
 
 class ObjekWisataController extends Controller
 {
@@ -39,8 +42,8 @@ class ObjekWisataController extends Controller
         $wisata['foto'] = explode(' | ', $wisata['foto']);
         $wisata['comments'] = $wisata->comments;
         $wisata['fasilitas'] = explode(',', $wisata['fasilitas']);
-        dd(request()->all());
-        $wisata['is_like_user'] = LikeObjekWisata::where('id_user', Auth::user()->tokens)->where('id_objek_wisata', $id)->first() ? true : false;
+        $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
+        $wisata['is_like_user'] = LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $id)->first() ? true : false;
         if (!$wisata) {
             return response()->json([
                 "status" => 404,
