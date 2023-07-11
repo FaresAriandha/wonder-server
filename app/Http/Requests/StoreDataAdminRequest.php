@@ -37,7 +37,6 @@ class StoreDataAdminRequest extends FormRequest
             "nama_lengkap" => "required|string|max:255",
             "jenis_kelamin" => "required|string",
             "alamat" => "required|string",
-            "foto" => "required|max:2048|mimes:jpg,png",
             "nik" => request()->isMethod('post') || (StoreDataAdminRequest::$credentials && StoreDataAdminRequest::$credentials->nik != request()->get('nik')) ? "required|max:16|unique:kredensial_admins,nik|string" : 'required|max:16',
             "no_telepon" => request()->isMethod('post') || (StoreDataAdminRequest::$credentials && StoreDataAdminRequest::$credentials->no_telepon != request()->get('no_telepon')) ? "required|digits_between:0,16|unique:kredensial_admins,no_telepon|integer" : "required|digits_between:0,16",
         ];

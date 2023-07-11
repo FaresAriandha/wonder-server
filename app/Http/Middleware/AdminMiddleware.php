@@ -16,7 +16,6 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // dd(Auth::user());
         if (Auth::user()->role != "visitor") {
             return $next($request);
         }
