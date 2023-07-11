@@ -25,17 +25,19 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::post('v1/login', [AuthController::class, 'authenticate']);
+Route::post('v1/login', [AuthController::class, 'authenticate'])->middleware('guest');
 Route::post('v1/registration', [AuthController::class, 'userStore']);
-Route::apiResource('v1/discover', ObjekWisataController::class)->only(['index', 'show']);
+Route::get('v1/discover-not-login/{id}', [ObjekWisataController::class, 'show']);
+Route::apiResource('v1/discover', ObjekWisataController::class)->only(['index']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // User relation
     Route::post('v1/logout', [AuthController::class, 'revoke']);
     Route::get('v1/profile/{user}', [AuthController::class, 'show']);
     Route::put('v1/profile/{user}', [AuthController::class, 'update']);
-    Route::apiResource('v1/discover', ObjekWisataController::class)->only(['update']);
+    Route::apiResource('v1/discover', ObjekWisataController::class)->only(['update', 'show']);
 });
+
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     // Admin relation

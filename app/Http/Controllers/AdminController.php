@@ -77,8 +77,9 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, StoreDataAdminRequest $storeDataAdminRequest)
+    public function update($id, RegisterUserRequest $registerUserRequest, StoreDataAdminRequest $storeDataAdminRequest)
     {
+        $validatedUser = $registerUserRequest->validated();
         $validated = $storeDataAdminRequest->validated();
         $admin = KredensialAdmin::where('id', $id)->first();
         if (!$admin) {
@@ -88,12 +89,15 @@ class AdminController extends Controller
             ], 400);
         }
 
-        if ($admin['foto']) {
-            Storage::disk('user_photo')->delete($admin['foto']);
+        $user = $admin->user;
+        if (isset($validatedUser['foto'])) {
+            if ($user['foto']) {
+                Storage::disk('user_photo')->delete($user['foto']);
+            }
+            $validatedUser['foto'] = Storage::disk('user_photo')->put('', $validatedUser['foto']);
         }
 
-        $validated['foto'] = Storage::disk('user_photo')->put('', $validated['foto']);
-
+        $user->update($validatedUser);
         $admin->update($validated);
         return response()->json([
             "status" => 200,

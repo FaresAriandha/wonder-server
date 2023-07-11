@@ -212,6 +212,11 @@ class NilaiObjekWisataController extends Controller
                     $temp["objek_wisata"] = [
                         "id" => $nilai[$i]->objek_wisata->id,
                         "nama" => $nilai[$i]->objek_wisata->nama,
+                        "deskripsi" => $nilai[$i]->objek_wisata->deskripsi,
+                        "kab_kota" => $nilai[$i]->objek_wisata->kab_kota,
+                        "provinsi" => $nilai[$i]->objek_wisata->provinsi,
+                        "negara" => $nilai[$i]->objek_wisata->negara,
+                        "lingkup" => $nilai[$i]->objek_wisata->lingkup,
                         "foto" => explode(" | ", $nilai[$i]->objek_wisata->foto),
                         "like" => $nilai[$i]->objek_wisata->jumlah_like,
                         "komen" => $nilai[$i]->objek_wisata->jumlah_komen,
