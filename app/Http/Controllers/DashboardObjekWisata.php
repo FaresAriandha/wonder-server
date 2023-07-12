@@ -29,7 +29,7 @@ class DashboardObjekWisata extends Controller
     {
         $filename = '';
         $validated = $objekWisataRequest->validated();
-        $wisata_exist = ObjekWisata::where('nama', $validated['nama'])->where('kab_kota', $validated['kab_kota'])->where('provinsi', $validated['provinsi'])->first();
+        $wisata_exist = ObjekWisata::where('nama', $validated['nama'])->where('kab_kota', $validated['kab_kota'])->where('provinsi', $validated['provinsi'])->where('negara', $validated['negara'])->where('lingkup', $validated['lingkup'])->first();
 
         if ($wisata_exist) {
             return response()->json([

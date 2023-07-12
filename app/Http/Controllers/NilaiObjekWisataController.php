@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kriteria;
 use App\Models\ObjekWisata;
 use Illuminate\Http\Request;
+use App\Models\LikeObjekWisata;
 use App\Models\NilaiObjekWisata;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\NilaiObjekWisataRequest;
-use App\Models\Kriteria;
 
 class NilaiObjekWisataController extends Controller
 {
@@ -205,6 +207,7 @@ class NilaiObjekWisataController extends Controller
         $data = [];
         $nilaiObjekWisata = NilaiObjekWisata::all()->groupBy('id_objek_wisata');
         $jumlahKriteria = count(Kriteria::all());
+        $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
         foreach ($nilaiObjekWisata as $nilai) {
             $temp = [];
             for ($i = 0; $i < $jumlahKriteria; $i++) {
@@ -220,6 +223,7 @@ class NilaiObjekWisataController extends Controller
                         "foto" => explode(" | ", $nilai[$i]->objek_wisata->foto),
                         "like" => $nilai[$i]->objek_wisata->jumlah_like,
                         "komen" => $nilai[$i]->objek_wisata->jumlah_komen,
+                        "is_like_user" => $wisata['is_like_user'] = LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $nilai[$i]->objek_wisata->id)->first() ? true : false,
                     ];
                 }
                 $temp[NilaiObjekWisataController::$req[$i]] = $nilai[$i]->nilai;
