@@ -35,6 +35,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('v1/profile/{user}', [AuthController::class, 'show']);
     Route::put('v1/profile/{user}', [AuthController::class, 'update']);
     Route::apiResource('v1/discover', ObjekWisataController::class)->only(['update']);
+    Route::apiResource('v1/articles', ArticleController::class);
 });
 
 

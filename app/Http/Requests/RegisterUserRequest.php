@@ -9,13 +9,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterUserRequest extends FormRequest
-{
+class RegisterUserRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -24,13 +22,12 @@ class RegisterUserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         $rules = [
             'username' => 'max:255|string',
             'email' => 'email:rfc,dns',
             'password' => 'string',
-            "foto" => "file|max:2048|mimes:jpg,png",
+            "foto" => "image|max:2048|mimes:jpg,png",
             "bio" => "string",
         ];
         if (request()->isMethod('put')) {
@@ -53,6 +50,10 @@ class RegisterUserRequest extends FormRequest
             $rules['email'] = "required|email:rfc,dns|unique:users,email";
             $rules['password'] = "required|string";
             $rules['role'] = "required";
+            if (request()->segment(3) == "admin") {
+                $rules['foto'] = "image|max:2048|mimes:jpg,png";
+                $rules['role'] = "required";
+            }
         }
 
         if (request()->segment(3) == "login") {
@@ -65,8 +66,7 @@ class RegisterUserRequest extends FormRequest
         return $rules;
     }
 
-    protected function failedValidation(Validator $validator)
-    {
+    protected function failedValidation(Validator $validator) {
         $response = [
             'status' => 400,
             'message' => 'There is wrong inputs',
