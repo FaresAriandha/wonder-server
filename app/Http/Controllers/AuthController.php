@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\KredensialAdmin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\RegisterUserRequest;
 
 class AuthController extends Controller
@@ -50,7 +51,6 @@ class AuthController extends Controller
     public function revoke(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
         return response()->json([
             "status" => 200,
             "message" => "Logout success!"
@@ -60,6 +60,8 @@ class AuthController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+        $user['like'] = $user->like;
+        $user['comments'] = $user->comments;
         if (!$user) {
             return response()->json([
                 "status" => 400,
@@ -69,6 +71,7 @@ class AuthController extends Controller
         return response()->json([
             "status" => 200,
             "data" => $user,
+            "test" => Auth::user(),
         ], 200);
     }
 
@@ -84,11 +87,20 @@ class AuthController extends Controller
 
         $validated = $registerUserRequest->validated();
 
-        if (!Hash::check($validated['old_password'], $user->password)) {
-            return response()->json([
-                "status" => 400,
-                "messages" => "Password not found!",
-            ], 400);
+        if (isset($validated['old_password']) && isset($validated['password'])) {
+            if (!Hash::check($validated['old_password'], $user->password)) {
+                return response()->json([
+                    "status" => 400,
+                    "messages" => "Password not found!",
+                ], 400);
+            }
+        }
+
+        if (isset($validated['foto'])) {
+            if ($user['foto']) {
+                Storage::disk('user_photo')->delete($user['foto']);
+            }
+            $validated['foto'] = Storage::disk('user_photo')->put('', $validated['foto']);
         }
 
         $updated = $user->update($validated);
