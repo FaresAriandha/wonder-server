@@ -37,6 +37,7 @@ class ObjekWisataController extends Controller {
     public function show($id) {
         $wisata = ObjekWisata::all(['id', 'nama', 'deskripsi', 'alamat_lengkap', 'kab_kota', 'provinsi', 'negara', 'lingkup', 'fasilitas', 'foto', 'konten_blog', 'jumlah_like', 'jumlah_komen'])->where('id', $id)->first();
 
+
         $wisata['foto'] = explode(' | ', $wisata['foto']);
         $wisata['comments'] = $wisata->comments;
         $wisata['fasilitas'] = explode(',', $wisata['fasilitas']);
