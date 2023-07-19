@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ObjekWisata;
 use Illuminate\Http\Request;
+use App\Models\LikeObjekWisata;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ObjekWisataRequest;
 
