@@ -17,13 +17,11 @@ use App\Http\Requests\ObjekWisataRequest;
 use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\LikeAndCommentRequest;
 
-class ObjekWisataController extends Controller
-{
+class ObjekWisataController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
+    public function index() {
         //
         $data = NilaiObjekWisataController::moora_calculate();
         $cleaning_data = [];
@@ -36,20 +34,25 @@ class ObjekWisataController extends Controller
         ], 200);
     }
 
-    public function show($id)
-    {
-        $wisata = ObjekWisata::all(['id', 'nama', 'deskripsi', 'alamat_lengkap', 'kab_kota', 'provinsi', 'negara', 'lingkup', 'fasilitas', 'foto', 'jumlah_like', 'jumlah_komen'])->where('id', $id)->first();
+    public function show($id) {
+        $wisata = ObjekWisata::all(['id', 'nama', 'deskripsi', 'alamat_lengkap', 'kab_kota', 'provinsi', 'negara', 'lingkup', 'fasilitas', 'foto', 'konten_blog', 'jumlah_like', 'jumlah_komen'])->where('id', $id)->first();
+
         $wisata['foto'] = explode(' | ', $wisata['foto']);
         $wisata['comments'] = $wisata->comments;
         $wisata['fasilitas'] = explode(',', $wisata['fasilitas']);
-        $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
-        $wisata['is_like_user'] = LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $id)->first() ? true : false;
+
+        if (request()->get('token_id')) {
+            $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
+            $wisata['is_like_user'] = LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $id)->first() ? true : false;
+        }
+
         if (!$wisata) {
             return response()->json([
                 "status" => 404,
                 "message" => "Objek wisata not found",
             ], 404);
         }
+
         return response()->json([
             "status" => 200,
             "message" => "Detail objek wisata",
@@ -57,13 +60,11 @@ class ObjekWisataController extends Controller
         ], 200);
     }
 
-    public function show2($id)
-    {
+    public function show2($id) {
         return response()->json($id);
     }
 
-    public function update($id, LikeAndCommentRequest $likeAndCommentRequest)
-    {
+    public function update($id, LikeAndCommentRequest $likeAndCommentRequest) {
         $wisata = ObjekWisata::where('id', $id)->first();
         if (!$wisata) {
             return response()->json([
@@ -85,7 +86,7 @@ class ObjekWisataController extends Controller
             if (!$created_comment || !$updateObjekWisata) {
                 return response()->json([
                     "status" => 400,
-                    "messages" => "There is problem for updating process",
+                    "message" => "There is problem for updating process",
                 ], 400);
             }
         }
@@ -102,7 +103,7 @@ class ObjekWisataController extends Controller
             if (!$update_like) {
                 return response()->json([
                     "status" => 400,
-                    "messages" => "There is problem for updating process",
+                    "message" => "There is problem for updating process",
                 ], 400);
             }
         }
@@ -110,13 +111,13 @@ class ObjekWisataController extends Controller
         if (!isset($validated['like_user']) && !isset($validated['comment_user'])) {
             return response()->json([
                 "status" => 400,
-                "messages" => "No likes and comments request",
+                "message" => "No likes and comments request",
             ], 400);
         }
 
         return response()->json([
             "status" => 200,
-            "messages" => "$wisata->nama has been added like or comments",
+            "message" => "$wisata->nama has been added like or comments",
         ], 200);
     }
 }

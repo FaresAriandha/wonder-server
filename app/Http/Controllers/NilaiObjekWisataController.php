@@ -8,8 +8,7 @@ use App\Models\NilaiObjekWisata;
 use App\Http\Requests\NilaiObjekWisataRequest;
 use App\Models\Kriteria;
 
-class NilaiObjekWisataController extends Controller
-{
+class NilaiObjekWisataController extends Controller {
     /**
      * Display a listing of the resource.
      */
@@ -17,21 +16,18 @@ class NilaiObjekWisataController extends Controller
     static public $req = [];
     static public $arrMoora = [];
 
-    static private function loadCriteria()
-    {
+    static private function loadCriteria() {
         NilaiObjekWisataController::$kriteria = Kriteria::all(['nama_kriteria']);
         foreach (NilaiObjekWisataController::$kriteria as $kriteria) {
             NilaiObjekWisataController::$req[] = str_replace(' ', '_', strtolower($kriteria->nama_kriteria));
         }
     }
 
-    public function __construct()
-    {
+    public function __construct() {
         NilaiObjekWisataController::loadCriteria();
     }
 
-    public function index()
-    {
+    public function index() {
         //
         $data = [];
         $nilaiObjekWisata = NilaiObjekWisata::all()->groupBy('id_objek_wisata');
@@ -55,8 +51,7 @@ class NilaiObjekWisataController extends Controller
         ], 200);
     }
 
-    public function create()
-    {
+    public function create() {
         return response()->json([
             "status" => 200,
             "criteria_name" => NilaiObjekWisataController::$req
@@ -66,15 +61,14 @@ class NilaiObjekWisataController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(NilaiObjekWisataRequest $nilaiObjekWisataRequest)
-    {
+    public function store(NilaiObjekWisataRequest $nilaiObjekWisataRequest) {
         //
         $validated = $nilaiObjekWisataRequest->validated();
         $wisata_exist = ObjekWisata::where('id', $validated['id_objek_wisata'])->first();
         if (!$wisata_exist) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Objek wisata not found",
+                "message" => "Objek wisata not found",
             ], 400);
         }
 
@@ -82,7 +76,7 @@ class NilaiObjekWisataController extends Controller
         if ($nilai_exist) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Assessment already exists",
+                "message" => "Assessment already exists",
             ], 400);
         }
 
@@ -99,22 +93,21 @@ class NilaiObjekWisataController extends Controller
 
         return response()->json([
             "status" => 201,
-            "messages" => "Assessment for $wisata_exist->nama has been added",
+            "message" => "Assessment for $wisata_exist->nama has been added",
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
         $data = [];
         $nilai_exist = NilaiObjekWisata::with('kriteria:id,nama_kriteria')->where("id_objek_wisata", $id)->get();
         if (count($nilai_exist) == 0) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Assessment does not exist yet",
+                "message" => "Assessment does not exist yet",
             ], 400);
         }
 
@@ -135,14 +128,13 @@ class NilaiObjekWisataController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, NilaiObjekWisataRequest $nilaiObjekWisataRequest)
-    {
+    public function update($id, NilaiObjekWisataRequest $nilaiObjekWisataRequest) {
         $validated = $nilaiObjekWisataRequest->validated();
         $wisata_exist = ObjekWisata::where('id', $id)->first();
         if (!$wisata_exist) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Objek wisata not found",
+                "message" => "Objek wisata not found",
             ], 400);
         }
 
@@ -150,7 +142,7 @@ class NilaiObjekWisataController extends Controller
         if (!$nilai_exist) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Assessment does not exist yet",
+                "message" => "Assessment does not exist yet",
             ], 400);
         }
 
@@ -167,44 +159,44 @@ class NilaiObjekWisataController extends Controller
         $nama_objek_wisata = $nilai_exist->objek_wisata->nama;
         return response()->json([
             "status" => 201,
-            "messages" => "Assessment for $nama_objek_wisata has been updated",
+            "message" => "Assessment for $nama_objek_wisata has been updated",
         ], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         //
         $nilai_exist = NilaiObjekWisata::where("id_objek_wisata", $id)->first();
         if (!$nilai_exist) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Assessment does not exist yet",
+                "message" => "Assessment does not exist yet",
             ], 400);
         }
         $deleted = NilaiObjekWisata::where("id_objek_wisata", $id)->delete();
         if (!$deleted) {
             return response()->json([
                 "status" => 400,
-                "messages" => "There is problem for deleting process",
+                "message" => "There is problem for deleting process",
             ], 400);
         }
         $nama_wisata = $nilai_exist->objek_wisata->nama;
         return response()->json([
             "status" => 200,
-            "messages" => "Assessment for $nama_wisata has been deleted",
+            "message" => "Assessment for $nama_wisata has been deleted",
         ], 200);
     }
 
 
-    static function moora_calculate()
-    {
+    static function moora_calculate() {
         NilaiObjekWisataController::loadCriteria();
         $data = [];
         $nilaiObjekWisata = NilaiObjekWisata::all()->groupBy('id_objek_wisata');
         $jumlahKriteria = count(Kriteria::all());
+
+
         foreach ($nilaiObjekWisata as $nilai) {
             $temp = [];
             for ($i = 0; $i < $jumlahKriteria; $i++) {
@@ -236,8 +228,7 @@ class NilaiObjekWisataController extends Controller
         return $data;
     }
 
-    static private function matriks_ternormalisasi($data)
-    {
+    static private function matriks_ternormalisasi($data) {
         $arrPenyebut = [];
         for ($i = 0; $i < count(NilaiObjekWisataController::$req); $i++) {
             $penyebut = 0;
@@ -258,8 +249,7 @@ class NilaiObjekWisataController extends Controller
         return $data;
     }
 
-    static private function matriks_ternormalisasi_terbobot($data)
-    {
+    static private function matriks_ternormalisasi_terbobot($data) {
         $bobot_nilai = Kriteria::all(['nama_kriteria', 'bobot']);
         for ($i = 0; $i < count($data); $i++) {
             for ($j = 0; $j < count($bobot_nilai); $j++) {
@@ -269,8 +259,7 @@ class NilaiObjekWisataController extends Controller
         return $data;
     }
 
-    static private function matriks_optimisasi($data)
-    {
+    static private function matriks_optimisasi($data) {
         $costs = [];
         $criteria_cost = Kriteria::where('tipe', 'cost')->get();
         foreach ($criteria_cost as $criteria) {

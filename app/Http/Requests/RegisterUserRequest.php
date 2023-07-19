@@ -28,7 +28,7 @@ class RegisterUserRequest extends FormRequest {
             'email' => 'email:rfc,dns',
             'password' => 'string',
             "foto" => "image|max:2048|mimes:jpg,png",
-            "bio" => "string",
+            "bio" => "nullable|string",
         ];
         if (request()->isMethod('put')) {
             $rules['username'] = "required|max:255|string|unique:users,username";
