@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\StoreDataAdminRequest;
 
-class AdminController extends Controller
-{
+class AdminController extends Controller {
     /**
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
+    public function index() {
         //
         $data = KredensialAdmin::all();
 
@@ -35,8 +33,7 @@ class AdminController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(RegisterUserRequest $registerUserRequest, StoreDataAdminRequest $storeDataAdminRequest)
-    {
+    public function store(RegisterUserRequest $registerUserRequest, StoreDataAdminRequest $storeDataAdminRequest) {
         //Add Admin Account
         $validatedUser = $registerUserRequest->validated();
         // Add Credential Admin
@@ -51,19 +48,18 @@ class AdminController extends Controller
         KredensialAdmin::create($validatedCredentials);
         return response()->json([
             'status' => 200,
-            'message' => 'Add crendential admin Success',
+            'message' => 'Akun berhasil ditambahkan!',
         ], 200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
-    {
+    public function show($id) {
         $credentials_user = KredensialAdmin::where('id', $id)->first();
         if (!$credentials_user) {
             return response()->json([
-                "message" => "Admin not found",
+                "message" => "User Admin tidak ditemukan!",
             ], 404);
         }
         $credentials_user['user'] = $credentials_user->user;
@@ -77,15 +73,14 @@ class AdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, RegisterUserRequest $registerUserRequest, StoreDataAdminRequest $storeDataAdminRequest)
-    {
+    public function update($id, RegisterUserRequest $registerUserRequest, StoreDataAdminRequest $storeDataAdminRequest) {
         $validatedUser = $registerUserRequest->validated();
         $validated = $storeDataAdminRequest->validated();
         $admin = KredensialAdmin::where('id', $id)->first();
         if (!$admin) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Admin not found!"
+                "message" => "User admin tidak ditemukan!"
             ], 400);
         }
 
@@ -101,20 +96,19 @@ class AdminController extends Controller
         $admin->update($validated);
         return response()->json([
             "status" => 200,
-            "message" => $validated['nama_lengkap'] . " update successfully!"
+            "message" => $validated['nama_lengkap'] . " berhasil diubah datanya!"
         ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $admin = KredensialAdmin::where('id', $id)->first();
         if (!$admin) {
             return response()->json([
                 "status" => 400,
-                "messages" => "Admin not found!"
+                "message" => "User admin tidak ditemukan!"
             ], 400);
         }
         if ($admin['foto']) {
@@ -125,13 +119,13 @@ class AdminController extends Controller
         if (!$deleted) {
             return response()->json([
                 "status" => 400,
-                "messages" => "There is problems!"
+                "message" => "Terdapat masalah!"
             ], 400);
         }
 
         return response()->json([
             "status" => 200,
-            "messages" => $admin->nama_lengkap . " has been deleted!"
+            "message" => "Akun " . $admin->nama_lengkap . " berhasil dihapus!"
         ], 200);
     }
 }

@@ -8,13 +8,11 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
-class ObjekWisataRequest extends FormRequest
-{
+class ObjekWisataRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return Auth::check();
     }
 
@@ -23,8 +21,7 @@ class ObjekWisataRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         // dd(request()->all());
         return [
             "nama" => "required|string|max:255",
@@ -36,11 +33,11 @@ class ObjekWisataRequest extends FormRequest
             "lingkup" => "required|string",
             "fasilitas" => "required|string",
             "foto.*" => "required|max:2048|mimes:jpg,png",
+            "konten_blog" => "required|string",
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
+    protected function failedValidation(Validator $validator) {
         $response = [
             'status' => 400,
             'message' => 'There is wrong inputs',

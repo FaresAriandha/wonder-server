@@ -9,13 +9,11 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class RegisterUserRequest extends FormRequest
-{
+class RegisterUserRequest extends FormRequest {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
@@ -24,14 +22,13 @@ class RegisterUserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-    public function rules(): array
-    {
+    public function rules(): array {
         $rules = [
             'username' => 'max:255|string',
             'email' => 'email:rfc,dns',
             'password' => 'string',
-            "foto" => "file|max:2048|mimes:jpg,png",
-            "bio" => "string",
+            "foto" => "image|max:2048|mimes:jpg,png",
+            "bio" => "nullable|string",
         ];
         if (request()->isMethod('put')) {
             $rules['username'] = "required|max:255|string|unique:users,username";
@@ -68,8 +65,7 @@ class RegisterUserRequest extends FormRequest
         return $rules;
     }
 
-    protected function failedValidation(Validator $validator)
-    {
+    protected function failedValidation(Validator $validator) {
         $response = [
             'status' => 422,
             'message' => 'There is wrong inputs',
