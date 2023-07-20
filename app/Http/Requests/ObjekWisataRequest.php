@@ -32,6 +32,8 @@ class ObjekWisataRequest extends FormRequest
             "alamat_lengkap" => "required|string",
             "kab_kota" => "required|string|max:100",
             "provinsi" => "required|string|max:100",
+            "negara" => "required|string|max:100",
+            "lingkup" => "required|string",
             "fasilitas" => "required|string",
             "foto.*" => "required|max:2048|mimes:jpg,png",
         ];
