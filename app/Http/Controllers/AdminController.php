@@ -42,9 +42,9 @@ class AdminController extends Controller {
         // Storing data
         $validatedUser['foto'] = Storage::disk('user_photo')->put('', $validatedUser['foto']);
         $userCreated = User::create($validatedUser);
+
+
         $validatedCredentials['id_user'] = $userCreated->id;
-
-
         KredensialAdmin::create($validatedCredentials);
         return response()->json([
             'status' => 200,

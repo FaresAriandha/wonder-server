@@ -49,9 +49,8 @@ class RegisterUserRequest extends FormRequest {
             $rules['username'] = "required|max:255|string|unique:users,username";
             $rules['email'] = "required|email:rfc,dns|unique:users,email";
             $rules['password'] = "required|string";
-            $rules['role'] = "required";
             if (request()->segment(3) == "admin") {
-                $rules['foto'] = "image|max:2048|mimes:jpg,png";
+                $rules['foto'] = "required|file|max:2048|mimes:jpg,png";
                 $rules['role'] = "required";
             }
         }
@@ -68,10 +67,10 @@ class RegisterUserRequest extends FormRequest {
 
     protected function failedValidation(Validator $validator) {
         $response = [
-            'status' => 400,
+            'status' => 422,
             'message' => 'There is wrong inputs',
             'data' => $validator->errors()
         ];
-        throw new HttpResponseException(response()->json($response, 400));
+        throw new HttpResponseException(response()->json($response, 422));
     }
 }

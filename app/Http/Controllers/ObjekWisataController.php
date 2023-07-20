@@ -2,19 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Mockery\Undefined;
 use App\Models\ObjekWisata;
-use Illuminate\Http\Request;
 use App\Models\LikeObjekWisata;
-use App\Models\NilaiObjekWisata;
 use Illuminate\Support\Facades\DB;
 use App\Models\KomentarObjekWisata;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\ObjekWisataRequest;
-use Illuminate\Contracts\Session\Session;
 use App\Http\Requests\LikeAndCommentRequest;
 
 class ObjekWisataController extends Controller {
@@ -61,11 +53,9 @@ class ObjekWisataController extends Controller {
         ], 200);
     }
 
-    public function show2($id) {
-        return response()->json($id);
-    }
 
-    public function update($id, LikeAndCommentRequest $likeAndCommentRequest) {
+    public function update($id, LikeAndCommentRequest $likeAndCommentRequest)
+    {
         $wisata = ObjekWisata::where('id', $id)->first();
         if (!$wisata) {
             return response()->json([

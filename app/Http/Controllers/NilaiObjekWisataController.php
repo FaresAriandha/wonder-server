@@ -197,11 +197,6 @@ class NilaiObjekWisataController extends Controller {
         $data = [];
         $nilaiObjekWisata = NilaiObjekWisata::all()->groupBy('id_objek_wisata');
         $jumlahKriteria = count(Kriteria::all());
-
-        if (request()->get('token_id')) {
-            $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
-        }
-
         foreach ($nilaiObjekWisata as $nilai) {
             $temp = [];
             for ($i = 0; $i < $jumlahKriteria; $i++) {
@@ -219,9 +214,9 @@ class NilaiObjekWisataController extends Controller {
                         "komen" => $nilai[$i]->objek_wisata->jumlah_komen,
 
                     ];
-
-                    if (isset($id_user)) {
-                        $temp["objek_wisata"]["is_like_user"] =  LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $nilai[$i]->objek_wisata->id)->first() ? true : false;
+                    if (request('token_id')) {
+                        $id_user = DB::table('personal_access_tokens')->addSelect('tokenable_id')->where('token', hash('sha256', request()->get('token_id')))->first();
+                        $temp['objek_wisata']['is_like_user'] = LikeObjekWisata::where('id_user', $id_user->tokenable_id)->where('id_objek_wisata', $nilai[$i]->objek_wisata->id)->first() ? true : false;
                     }
                 }
                 $temp[NilaiObjekWisataController::$req[$i]] = $nilai[$i]->nilai;
