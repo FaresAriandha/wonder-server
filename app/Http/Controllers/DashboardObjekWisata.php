@@ -9,11 +9,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ObjekWisataRequest;
 
-class DashboardObjekWisata extends Controller {
+class DashboardObjekWisata extends Controller
+{
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index()
+    {
         //
         $data = ObjekWisata::All();
         return response()->json([
@@ -25,7 +27,8 @@ class DashboardObjekWisata extends Controller {
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ObjekWisataRequest $objekWisataRequest) {
+    public function store(ObjekWisataRequest $objekWisataRequest)
+    {
         $filename = '';
         $validated = $objekWisataRequest->validated();
         $wisata_exist = ObjekWisata::where('nama', $validated['nama'])->where('kab_kota', $validated['kab_kota'])->where('provinsi', $validated['provinsi'])->where('negara', $validated['negara'])->where('lingkup', $validated['lingkup'])->first();
@@ -57,7 +60,8 @@ class DashboardObjekWisata extends Controller {
     /**
      * Display the specified resource.
      */
-    public function show($id) {
+    public function show($id)
+    {
         $wisata = ObjekWisata::all(['id', 'nama', 'deskripsi', 'alamat_lengkap', 'kab_kota', 'provinsi', 'lingkup', 'negara', 'fasilitas', 'foto', 'konten_blog', 'jumlah_like', 'jumlah_komen'])->where('id', $id)->first();
         if (!$wisata) {
             return response()->json([
@@ -86,7 +90,8 @@ class DashboardObjekWisata extends Controller {
     /**
      * Update the specified resource in storage.
      */
-    public function update($id, ObjekWisataRequest $objekWisataRequest) {
+    public function update($id, ObjekWisataRequest $objekWisataRequest)
+    {
         //
         $filename = "";
         $validated = $objekWisataRequest->validated();
@@ -134,7 +139,8 @@ class DashboardObjekWisata extends Controller {
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         //
         $wisata_exist = ObjekWisata::where('id', $id)->first();
         if (!$wisata_exist) {
