@@ -25,9 +25,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
-Route::post('v1/login', [AuthController::class, 'authenticate'])->middleware('guest');
+Route::post('v1/login', [AuthController::class, 'authenticate'])->middleware(['guest', 'cors']);
 Route::post('v1/registration', [AuthController::class, 'userStore']);
 Route::apiResource('v1/discover', ObjekWisataController::class)->only(['index', 'show']);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     // User relation
